@@ -1,0 +1,72 @@
+image: jakederry/testfx
+
+stages:
+  - analyze
+  - validate
+  - test
+  - report
+
+checkstyle_analysis:
+  stage: validate
+  script: mvn validate
+
+sonar_analysis:
+  stage: analyze
+  script:
+    - java -version
+    - mvn -version
+    - |
+      mvn -X sonar:sonar \
+      -Dsonar.host.url=http://coursework.cs.duke.edu:9000 \
+      -Dsonar.java.binaries=. \
+      -Dsonar.exclusions=**/*.xml
+  tags:
+    - sonarqube
+  only:
+    - master
+    - main
+
+unit_testing:
+  stage: test
+  before_script:
+    - yum install -y fontconfig dejavu-sans-fonts dejavu-serif-fonts
+    - curl -L -O https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.gz
+    - tar -xzvf Hack-v3.003-ttf.tar.gz
+    - mkdir ~/.fonts
+    - mv ttf/Hack-Regular.ttf ~/.fonts/Hack-Regular.ttf
+    - mv ttf/Hack-Italic.ttf ~/.fonts/Hack-Italic.ttf
+    - mv ttf/Hack-Bold.ttf ~/.fonts/Hack-Bold.ttf
+    - mv ttf/Hack-BoldItalic.ttf ~/.fonts/Hack-BoldItalic.ttf
+    - fc-cache -f -v
+    - yum install -y pango
+  script:
+    - |
+      mvn clean install \
+        -Djava.awt.headless=true \
+        -Dtestfx.robot=glass \
+        -Dtestfx.headless=true \
+        -Dembedded=monocle \
+        -Dglass.platform=Monocle \
+        -Dprism.order=sw \
+        -Dprism.fontdir=/usr/share/fonts \
+        -Dtestfx.setup.timeout=2500
+    - cat target/site/jacoco/index.html
+  artifacts:
+    paths:
+      - target/site/jacoco/jacoco.xml
+      - "**/target/surefire-reports/TEST-*.xml"
+
+coverage_report:
+  stage: report
+  image: python:3.8
+  dependencies:
+    - unit_testing
+  script:
+    - pip install pipenv
+    - pipenv install
+    - pipenv run python3 cover2cover.py target/site/jacoco/jacoco.xml src/main/java > cobertura-coverage.xml
+  artifacts:
+    reports:
+      cobertura: cobertura-coverage.xml
+      junit:
+        - "**/target/surefire-reports/TEST-*.xml"
