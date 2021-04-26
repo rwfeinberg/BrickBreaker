@@ -15,6 +15,16 @@ Finish Date: 09/28/2020
 
 Hours Spent: 25
 
+### Pictures/Video
+
+#### Level One:
+![game1](https://user-images.githubusercontent.com/66392115/116021497-4e6a1b00-a616-11eb-897b-fa93f5224bb3.png)
+
+
+#### Gameplay:
+https://user-images.githubusercontent.com/66392115/116021518-55912900-a616-11eb-9da9-60b3b983672d.mp4
+
+
 ### Resources Used
 
 StackOverFlow
@@ -54,21 +64,9 @@ Known Bugs:
 * If the ball-enlarging powerup is obtained while the ball collides with the paddle, or while the ball is sitting still on the paddle (before starting), the ball will get stuck in the paddle briefly.
 * If the ball collides with two bricks on the same frame, it only bounces off of one of the bricks, and will seem to not obey physics (this happens because of the space between the bricks). This space can also cause the ball to be sent straight between two bricks if the U key is pressed without moving the paddle.
 
-
-Extra credit:
-
-N/A
-
 ### Notes/Assumptions
 * Data files are .txt files.
 * Directory containing data files will be named "data"
 * Correct format of the level .txt files (see PLAN.md for example)
 * Level .txt files will consist of the following characters: 0, 1, 2, 3, 4, 5, or B (see the PLAN.md file for descriptions)
 * **The checkBossmethod() test in GameTestLevelThree.java will take a while (~30 seconds)**
-
-
-### Impressions
-* Overall, we thought the assignment was enjoyable, however being under a time crunch can be a bit stressful at times and not allow us to fully enjoy the process of making the game
-* At times, it was hard to find a balance between trying to modularize and clean up our code vs functionality
-
-
